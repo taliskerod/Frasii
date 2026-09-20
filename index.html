@@ -1,0 +1,1035 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Frasi</title>
+<style>
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --surface-2:#F5F7F9; --ink:#15223A; --muted:#5A6A80; --line:#D5DCE4;
+  --accent:#0D6B4E; --accent-ink:#FFFFFF; --accent-soft:#DCEEE6; --signal:#E3A01A; --danger:#B3261E;
+  --serif:"Noto Serif", Georgia, "Times New Roman", serif;
+  --sans:system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --st:max(env(safe-area-inset-top,0px), var(--safe-area-inset-top,0px));
+  --sb:max(env(safe-area-inset-bottom,0px), var(--safe-area-inset-bottom,0px));
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0E1523; --surface:#172236; --surface-2:#1C2940; --ink:#E7ECF4; --muted:#95A3BA; --line:#2A3A55;
+    --accent:#3CC497; --accent-ink:#06261B; --accent-soft:#16392F; --signal:#F2B84B; --danger:#FF8A80;
+    color-scheme:dark;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased;padding-top:var(--st)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+
+.wrap{max-width:640px;margin:0 auto;padding:0 16px calc(96px + var(--sb))}
+header.top{padding:14px 2px 6px;display:flex;align-items:baseline;justify-content:space-between}
+.brand{font:500 26px/1 var(--serif);margin:0}
+.sub{color:var(--muted);font-size:14px}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:12px}
+.label{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 6px;display:block}
+textarea,input[type=text],select.field{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{resize:vertical;min-height:80px;line-height:1.45}
+.hint{font-size:13px;color:var(--muted);margin:8px 0 0}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:600}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{background:var(--danger);border-color:var(--danger);color:#fff}
+.btn.small{padding:6px 12px;font-size:14px}
+.btn:disabled{opacity:.55}
+.icon-btn{width:40px;height:40px;flex:none;border:1px solid var(--line);background:var(--surface);border-radius:50%;display:grid;place-items:center;padding:0;font-size:12px;font-weight:700}
+.icon-btn svg{width:16px;height:16px}
+.icon-btn.plain{border-color:transparent;background:none}
+.lang-btn{height:32px;min-width:40px;border:1px solid var(--line);background:var(--surface);border-radius:16px;font-size:12px;font-weight:700;padding:0 10px;display:inline-flex;align-items:center;gap:4px}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface-2);border-radius:18px;padding:6px 12px;font-size:14px;font-weight:600;color:var(--muted)}
+.chip[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.chip.add{border-style:dashed;background:none}
+
+.preview{margin-top:12px}
+.prow{display:grid;grid-template-columns:1fr auto;gap:4px 8px;align-items:center;padding:8px 0;border-top:1px dashed var(--line)}
+.prow .en{grid-column:1/-1;font-size:14px;color:var(--muted);margin:0}
+.prow input{font-family:var(--serif);font-size:18px}
+
+.list-head{display:flex;justify-content:space-between;align-items:baseline;margin:20px 2px 8px}
+.list-head h2{font:500 20px/1.2 var(--serif);margin:0}
+.list-head span{color:var(--muted);font-size:14px}
+ul.cards{list-style:none;margin:10px 0 0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.card{padding:12px 12px 12px 16px;border-top:1px solid var(--line)}
+.card:first-child{border-top:0}
+.card-main{display:flex;gap:10px;align-items:flex-start}
+.card-text{flex:1;min-width:0}
+.card .it{font:400 19px/1.35 var(--serif);margin:0;overflow-wrap:anywhere}
+.card .en{font-size:14px;color:var(--muted);margin:2px 0 0;overflow-wrap:anywhere}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.tag{font-size:12px;color:var(--muted);background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:1px 8px}
+.card-actions{display:flex;gap:6px;align-items:center;flex:none}
+.edit-grid{display:grid;gap:10px}
+.empty{padding:28px 20px;text-align:center;color:var(--muted)}
+.empty strong{display:block;color:var(--ink);font:500 19px/1.3 var(--serif);margin-bottom:4px}
+
+.seg{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:none;border-radius:8px;padding:8px 4px;font-size:14px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(10,20,40,.14)}
+
+/* Listen stage */
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:20px;margin-top:12px;padding:18px 20px;min-height:330px;display:flex;flex-direction:column}
+.stage-top{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;justify-content:space-between}
+.stage-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:14px 0;gap:12px}
+.line{margin:0;min-height:1.4em;transition:opacity .25s;overflow-wrap:anywhere}
+.line.lang-en{font-size:17px;color:var(--muted)}
+.line.lang-it{font:400 clamp(26px,7.5vw,38px)/1.2 var(--serif)}
+.line.veiled{opacity:0}
+.phase{display:flex;align-items:center;gap:10px;font-weight:600;min-height:24px}
+.phase .dot{width:10px;height:10px;border-radius:50%;background:var(--line);flex:none}
+.phase[data-kind=listen] .dot{background:var(--accent)}
+.phase[data-kind=turn] .dot{background:var(--signal)}
+.bar{height:6px;border-radius:3px;background:var(--surface-2);margin:10px 0 14px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--signal)}
+.transport{display:flex;justify-content:center;align-items:center;gap:22px}
+.transport .icon-btn{width:52px;height:52px}
+.transport .icon-btn svg{width:20px;height:20px}
+.play-btn{width:76px;height:76px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center}
+.play-btn svg{width:28px;height:28px}
+
+/* Flashcards */
+.fc-wrap{margin-top:12px;perspective:1200px}
+.fc{position:relative;height:300px;transform-style:preserve-3d;transition:transform .45s ease}
+.fc.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:18px 20px;display:flex;flex-direction:column}
+.face.back{transform:rotateY(180deg);border-color:var(--accent)}
+.face-top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--muted)}
+.face-text{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px 4px;overflow-wrap:anywhere}
+.face-text.lang-it{font:400 clamp(26px,7vw,36px)/1.25 var(--serif)}
+.face-text.lang-en{font-size:22px;line-height:1.35}
+.face-hint{text-align:center;font-size:13px;color:var(--muted)}
+.fc-controls{display:flex;justify-content:center;gap:14px;margin-top:14px}
+.fc-controls .icon-btn{width:52px;height:52px}
+@media (prefers-reduced-motion:reduce){.fc{transition:none}.line{transition:none}}
+
+.setting{padding:12px 0;border-top:1px solid var(--line)}
+.setting:first-child{border-top:0;padding-top:0}
+.pass summary{cursor:pointer;font:500 19px/1.3 var(--serif);padding:2px 0 10px}
+.pass[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
+.pass .setting:first-child{padding-top:0}
+label.pick{display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0}
+.toggle input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.val{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:500}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:var(--sb)}
+nav.tabs .in{max-width:640px;margin:0 auto;display:flex}
+nav.tabs button{flex:1;border:0;background:none;padding:10px 0 12px;font-weight:600;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px}
+nav.tabs button svg{width:22px;height:22px}
+nav.tabs button[aria-selected=true]{color:var(--accent)}
+
+.toast{position:fixed;left:50%;bottom:calc(80px + var(--sb));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;max-width:calc(100% - 32px);z-index:20}
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);padding:20px;width:min(420px,calc(100% - 32px))}
+dialog::backdrop{background:rgba(8,14,26,.45)}
+dialog h3{margin:0 0 6px;font:500 21px/1.25 var(--serif)}
+dialog p{margin:0 0 12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><h1 class="brand">Frasi</h1><span class="sub" id="libCount"></span></header>
+
+  <!-- ADD -->
+  <section id="view-add">
+    <div class="panel">
+      <label class="label" for="enInput">English</label>
+      <textarea id="enInput" placeholder="I'll grab a coffee before work." autocapitalize="sentences"></textarea>
+      <p class="hint" id="addStatus">Type in English and the Italian appears automatically. Put each sentence on its own line to add several at once.</p>
+      <div class="preview" id="preview"></div>
+      <div style="margin-top:14px">
+        <span class="label">Save to groups</span>
+        <div class="chips" id="addGroups"></div>
+      </div>
+      <div class="row" style="margin-top:14px">
+        <button class="btn primary" id="saveBtn" disabled>Add sentence</button>
+        <button class="btn" id="clearBtn">Clear</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section id="view-lib" hidden>
+    <div class="panel">
+      <div class="chips" id="libFilter"></div>
+      <div class="row" id="groupActions" style="margin-top:12px" hidden>
+        <button class="btn small" id="renameGroup">Rename group</button>
+        <button class="btn small" id="deleteGroup" style="color:var(--danger)">Delete group</button>
+      </div>
+    </div>
+    <input type="text" id="search" placeholder="Search sentences" aria-label="Search sentences" style="margin-top:12px">
+    <div class="list-head"><h2 id="libTitle">All sentences</h2><span id="libShown"></span></div>
+    <ul class="cards" id="cardList"></ul>
+  </section>
+
+  <!-- PLAY -->
+  <section id="view-play" hidden>
+    <div class="panel">
+      <span class="label">Play from</span>
+      <div class="chips" id="playGroups"></div>
+      <p class="hint" id="playCount"></p>
+      <div class="seg" id="modeSeg" style="margin-top:12px">
+        <button data-v="listen">Listen</button><button data-v="cards">Flashcards</button>
+      </div>
+    </div>
+
+    <div id="listenStage">
+      <div class="stage">
+        <div class="stage-top"><span id="stCount">0 / 0</span><span id="stRep"></span></div>
+        <div class="stage-body"><p class="line" id="lineA"></p><p class="line" id="lineB"></p></div>
+        <div class="phase" id="phase" data-kind="idle"><span class="dot"></span><span id="phaseText">Tap play to start</span></div>
+        <div class="bar"><i id="barFill"></i></div>
+        <div class="transport">
+          <button class="icon-btn" id="prevBtn" aria-label="Previous"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 3h2v14H4zM17 3v14L7 10z"/></svg></button>
+          <button class="play-btn" id="playBtn" aria-label="Play"></button>
+          <button class="icon-btn" id="nextBtn" aria-label="Next"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M14 3h2v14h-2zM3 3v14l10-7z"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div id="cardStage" hidden>
+      <div class="fc-wrap">
+        <div class="fc" id="fc">
+          <div class="face front"><div class="face-top"><span id="fcCountF"></span><button class="lang-btn" data-read="front">Read</button></div><div class="face-text" id="fcFront"></div><div class="face-hint">Tap to flip, swipe to move</div></div>
+          <div class="face back"><div class="face-top"><span id="fcCountB"></span><button class="lang-btn" data-read="back">Read</button></div><div class="face-text" id="fcBack"></div><div class="face-hint">Tap to flip back</div></div>
+        </div>
+      </div>
+      <div class="fc-controls">
+        <button class="icon-btn" id="fcPrev" aria-label="Previous card"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.5 4L6.5 10l6 6"/></svg></button>
+        <button class="icon-btn" id="fcFlip" aria-label="Flip card"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8a7 7 0 0 1 12.5-3.5M17 12a7 7 0 0 1-12.5 3.5"/><path d="M16 1.5v3.5h-3.5M4 18.5V15h3.5"/></svg></button>
+        <button class="icon-btn" id="fcNext" aria-label="Next card"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.5 4l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="setting">
+        <span class="label">Order</span>
+        <div class="seg" id="orderSeg"><button data-v="inorder">In order</button><button data-v="shuffle">Shuffle</button></div>
+      </div>
+      <div class="setting">
+        <label class="toggle listen-only"><span>Loop when finished</span><input type="checkbox" id="setLoop"></label>
+        <label class="toggle listen-only"><span>Hide the second language until it plays</span><input type="checkbox" id="setHide"></label>
+        <label class="toggle cards-only"><span>Read each side aloud automatically</span><input type="checkbox" id="setAuto"></label>
+      </div>
+    </div>
+    <details class="panel pass" open><summary>First play-through</summary><div id="learnUI"></div></details>
+    <details class="panel pass listen-only" open><summary>Active recall</summary><div id="recallUI"></div></details>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="view-set" hidden>
+    <div class="panel">
+      <div class="setting">
+        <label class="label" for="voice-itF">Italian female voice</label>
+        <div class="row"><select class="field" id="voice-itF" data-voice="itF" style="flex:1;width:auto;min-width:0"></select><button class="icon-btn" data-test="itF" aria-label="Test Italian female voice">IT</button></div>
+        <label class="label" for="voice-itM" style="margin-top:12px">Italian male voice</label>
+        <div class="row"><select class="field" id="voice-itM" data-voice="itM" style="flex:1;width:auto;min-width:0"></select><button class="icon-btn" data-test="itM" aria-label="Test Italian male voice">IT</button></div>
+        <label class="label" for="voice-enF" style="margin-top:12px">English female voice</label>
+        <div class="row"><select class="field" id="voice-enF" data-voice="enF" style="flex:1;width:auto;min-width:0"></select><button class="icon-btn" data-test="enF" aria-label="Test English female voice">EN</button></div>
+        <label class="label" for="voice-enM" style="margin-top:12px">English male voice</label>
+        <div class="row"><select class="field" id="voice-enM" data-voice="enM" style="flex:1;width:auto;min-width:0"></select><button class="icon-btn" data-test="enM" aria-label="Test English male voice">EN</button></div>
+        <p class="hint">Android does not label voices as male or female, so test a few and assign them here. Your play settings then use these for Female, Male or Both.</p>
+        <p class="hint">Voices marked "network" need internet. For offline, pick one without it. If Italian voices are missing or sound rough, install Google's Italian voice data.</p>
+        <button class="btn small" id="installVoices" style="margin-top:10px">Install voice data</button>
+      </div>
+      <div class="setting">
+        <span class="label">Offline translation</span>
+        <p class="hint" id="modelStatus" style="margin-top:0">Checking…</p>
+        <button class="btn small" id="downloadModel" style="margin-top:8px" hidden>Download Italian model</button>
+      </div>
+      <div class="setting">
+        <span class="label">Backup</span>
+        <p class="hint" style="margin-top:0">Your sentences live only on this phone. Uninstalling the app deletes them, so copy a backup now and then and keep it in notes or email.</p>
+        <div class="row" style="margin-top:10px">
+          <button class="btn small" id="exportBtn">Copy backup</button>
+          <button class="btn small" id="importToggle">Restore from backup</button>
+        </div>
+        <div id="importWrap" hidden style="margin-top:10px">
+          <textarea id="importText" placeholder="Paste a Frasi backup here"></textarea>
+          <button class="btn small primary" id="importBtn" style="margin-top:8px">Restore</button>
+          <p class="hint">Restoring adds anything missing and keeps what you already have.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav class="tabs"><div class="in" role="tablist">
+  <button role="tab" data-view="add" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+  <button role="tab" data-view="lib" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 10h8M8 14h5"/></svg>Library</button>
+  <button role="tab" data-view="play" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M10 8.5v7l5.5-3.5z" fill="currentColor"/></svg>Play</button>
+  <button role="tab" data-view="set" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Settings</button>
+</div></nav>
+
+<dialog id="dlg">
+  <h3 id="dlgTitle"></h3><p id="dlgBody"></p>
+  <input type="text" id="dlgInput">
+  <div class="row" style="justify-content:flex-end;margin-top:16px"><button class="btn" id="dlgCancel">Cancel</button><button class="btn primary" id="dlgOk">Save</button></div>
+</dialog>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script src="capacitor.js"></script>
+<script>
+(function(){
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const ICON_PLAY = '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M5 2.5v15L17.5 10z"/></svg>';
+const ICON_PAUSE = '<svg viewBox="0 0 20 20" fill="currentColor"><path d="M4.5 3h4v14h-4zM11.5 3h4v14h-4z"/></svg>';
+const ICON_EDIT = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M13.5 3.5l3 3L7 16H4v-3z"/></svg>';
+
+/* ---------- native plugins ---------- */
+const CapX = window.capacitorExports;
+const isNative = !!(window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform());
+const reg = n => (isNative && CapX && CapX.registerPlugin) ? CapX.registerPlugin(n) : null;
+const TTS = reg('TextToSpeech'), Translation = reg('Translation'), KeepAwake = reg('KeepAwake');
+
+/* ---------- storage ---------- */
+const LIB_KEY = 'frasi.lib.v1', SET_KEY = 'frasi.settings.v1';
+const DEFAULTS = {view:'add', mode:'listen', playGroups:[], order:'inorder', loop:true, hide:false, auto:true, addGroups:[],
+  voices:{itF:'', itM:'', enF:'', enM:''},
+  learn:{first:'en', plays:2, gap:'auto', think:2, voice:'f', rate:1.0, repRate:0.65},
+  recall:{size:10, rounds:1, prompt:'it', wait:4, after:1, plays:1, order:'inorder', voice:'m', rate:1.0, repRate:0.65}};
+function load(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
+let lib = load(LIB_KEY, {sentences:[], groups:[]});
+if (!Array.isArray(lib.sentences)) lib.sentences = [];
+if (!Array.isArray(lib.groups)) lib.groups = [];
+let S = Object.assign({}, DEFAULTS, load(SET_KEY, {}));
+['voices','learn','recall'].forEach(k => { S[k] = Object.assign({}, DEFAULTS[k], S[k] || {}); });
+function saveLib(){ try { localStorage.setItem(LIB_KEY, JSON.stringify(lib)); } catch(e){ toast('Could not save. Storage may be full.'); } }
+function saveSettings(){ try { localStorage.setItem(SET_KEY, JSON.stringify(S)); } catch(e){} }
+const byId = id => lib.sentences.find(s => s.id === id);
+const groupOf = id => lib.groups.find(g => g.id === id);
+function groupsFor(sid){ return lib.groups.filter(g => g.ids.includes(sid)); }
+
+/* ---------- toast & dialog ---------- */
+let toastT;
+function toast(m){ const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 3200); }
+function ask({title, body='', value=null, confirm='Save', danger=false}){
+  return new Promise(res => {
+    const d = $('#dlg'), inp = $('#dlgInput'), ok = $('#dlgOk'), cancel = $('#dlgCancel');
+    $('#dlgTitle').textContent = title; $('#dlgBody').textContent = body; $('#dlgBody').hidden = !body;
+    inp.hidden = value === null; inp.value = value || '';
+    ok.textContent = confirm; ok.className = danger ? 'btn danger' : 'btn primary';
+    const done = v => { ok.onclick = cancel.onclick = inp.onkeydown = d.oncancel = null; if (d.open) d.close(); res(v); };
+    ok.onclick = () => { if (value !== null && !inp.value.trim()) { inp.focus(); return; } done(value === null ? true : inp.value.trim()); };
+    cancel.onclick = () => done(null);
+    d.oncancel = e => { e.preventDefault(); done(null); };
+    inp.onkeydown = e => { if (e.key === 'Enter') ok.onclick(); };
+    d.showModal(); if (value !== null) setTimeout(() => inp.focus(), 50);
+  });
+}
+async function newGroup(){
+  const name = await ask({title:'New group', value:'', confirm:'Create group'});
+  if (!name) return null;
+  const g = {id:uid('g'), name, ids:[]}; lib.groups.push(g); saveLib(); return g;
+}
+
+/* ---------- voices & speech ---------- */
+let voices = []; // {name, lang, idx, network}
+async function loadVoices(){
+  voices = [];
+  if (TTS){
+    try {
+      const r = await TTS.getSupportedVoices();
+      (r.voices || []).forEach((v, i) => voices.push({name:v.name, lang:(v.lang||'').replace('_','-'), idx:i, network: v.localService === false}));
+    } catch(e){}
+  } else if ('speechSynthesis' in window){
+    (speechSynthesis.getVoices() || []).forEach((v, i) => voices.push({name:v.name, lang:(v.lang||'').replace('_','-'), idx:i, network: v.localService === false, web:v}));
+  }
+  renderVoices();
+}
+function langVoices(lang){ return voices.filter(v => v.lang.toLowerCase().indexOf(lang) === 0).sort((a,b) => (a.network - b.network) || a.name.localeCompare(b.name)); }
+function chosenVoice(lang, g){ const name = S.voices[lang + (g === 'm' ? 'M' : 'F')]; return voices.find(v => v.name === name) || null; }
+function renderVoices(){
+  $$('[data-voice]').forEach(el => {
+    const k = el.dataset.voice, lang = k.slice(0,2), list = langVoices(lang), name = S.voices[k];
+    el.innerHTML = '<option value="">Device default</option>' +
+      list.map(v => `<option value="${esc(v.name)}">${esc(v.name)} (${esc(v.lang)}${v.network ? ', network' : ''})</option>`).join('');
+    el.value = voices.find(v => v.name === name) ? name : '';
+  });
+}
+
+let lastSpeakCancel = null;
+function speak(text, lang, rate, token, g){
+  return new Promise(resolve => {
+    if (!text || (token && token.cancelled)) return resolve(0);
+    const start = Date.now(); let done = false;
+    const fin = () => { if (done) return; done = true; clearTimeout(timer); if (token) token.off(fin); resolve(Date.now() - start); };
+    const timer = setTimeout(fin, (text.length * 140) / rate + 6000);
+    if (token) token.on(fin);
+    const v = chosenVoice(lang, g || 'f');
+    if (TTS){
+      const opts = {text, lang: lang === 'it' ? 'it-IT' : 'en-US', rate, pitch:1, volume:1, category:'playback'};
+      if (v) opts.voice = v.idx;
+      TTS.speak(opts).then(fin, err => { fin(); if (!(token && token.cancelled)) toast('Speech failed. Check the voice in Settings.'); });
+    } else if ('speechSynthesis' in window){
+      const u = new SpeechSynthesisUtterance(text); u.lang = lang === 'it' ? 'it-IT' : 'en-US'; u.rate = rate;
+      if (v && v.web) u.voice = v.web;
+      u.onend = fin; u.onerror = fin; window._frasiU = u; speechSynthesis.speak(u);
+    } else fin();
+  });
+}
+function stopSpeech(){ try { if (TTS) TTS.stop(); else if ('speechSynthesis' in window) speechSynthesis.cancel(); } catch(e){} }
+function makeToken(){ const fns = new Set(); return {cancelled:false, on:f => fns.add(f), off:f => fns.delete(f), cancel(){ this.cancelled = true; fns.forEach(f => f()); fns.clear(); }}; }
+function wait(ms, token){ return new Promise(res => { if (token.cancelled || ms <= 0) return res(); const fin = () => { clearTimeout(t); token.off(fin); res(); }; const t = setTimeout(fin, ms); token.on(fin); }); }
+
+let quickToken = null;
+function quickSay(text, lang, withSlow, g){
+  stopAll();
+  if (quickToken) quickToken.cancel();
+  const token = makeToken(); quickToken = token;
+  const L = S.learn, voice = g ? () => g : voicer(L.voice);
+  (async () => {
+    await speak(text, lang, lang === 'it' ? L.rate : 1, token, voice());
+    if (withSlow && lang === 'it' && Number(L.plays) > 1 && L.repRate < L.rate && !token.cancelled){ await wait(400, token); await speak(text, 'it', L.repRate, token, voice()); }
+  })();
+}
+
+/* ---------- translation (on-device) ---------- */
+const tCache = new Map();
+let modelReady = false, modelPromise = null;
+async function checkModel(){
+  if (!Translation){ setModelStatus('Offline translation only works in the Android app. Type the Italian yourself here.', false); return; }
+  try {
+    const r = await Translation.getDownloadedModels();
+    modelReady = (r.languages || []).includes('it');
+    setModelStatus(modelReady ? 'Italian model downloaded. Translation works offline.' : 'Italian model not downloaded yet. It downloads automatically the first time you translate (about 30 MB, needs Wi-Fi).', !modelReady);
+  } catch(e){ setModelStatus('Could not check the translation model.', true); }
+}
+function setModelStatus(t, showBtn){ $('#modelStatus').textContent = t; $('#downloadModel').hidden = !showBtn; }
+function ensureModel(){
+  if (!Translation) return Promise.reject({code:'UNAVAILABLE'});
+  if (modelReady) return Promise.resolve();
+  if (!modelPromise){
+    modelPromise = (async () => {
+      const r = await Translation.getDownloadedModels();
+      if (!(r.languages || []).includes('it')){
+        setAddStatus('Downloading the Italian translation model (about 30 MB, one time). This needs Wi-Fi…');
+        await Translation.downloadModel({language:'it'});
+      }
+      modelReady = true; setAddStatus(''); checkModel();
+    })().catch(e => { modelPromise = null; throw e; });
+  }
+  return modelPromise;
+}
+async function translate(en){
+  if (tCache.has(en)) return tCache.get(en);
+  await ensureModel();
+  const r = await Translation.translate({text:en, sourceLanguage:'en', targetLanguage:'it'});
+  const it = (r && r.text || '').trim();
+  tCache.set(en, it); return it;
+}
+const DEFAULT_ADD_HINT = 'Type in English and the Italian appears automatically. Put each sentence on its own line to add several at once.';
+function setAddStatus(t){ $('#addStatus').textContent = t || DEFAULT_ADD_HINT; }
+
+/* ---------- ADD view ---------- */
+let rows = []; let addTimer = null;
+function onEnInput(){ clearTimeout(addTimer); addTimer = setTimeout(syncRows, 500); }
+function syncRows(){
+  const lines = $('#enInput').value.split('\n').map(s => s.trim()).filter(Boolean);
+  const old = rows;
+  rows = lines.map(line => {
+    const k = line.indexOf('|');
+    if (k > -1){ const en = line.slice(0,k).trim(), it = line.slice(k+1).trim(); const o = old.find(r => r.en === en && r.manual); return o || {key:uid('r'), en, it, edited:true, manual:true}; }
+    const o = old.find(r => r.en === line && !r.manual);
+    return o || {key:uid('r'), en:line, it:tCache.get(line) || '', edited:false, pending:!tCache.has(line)};
+  });
+  renderRows();
+  rows.forEach(r => {
+    if (!r.pending || r.inflight) return;
+    r.inflight = true;
+    translate(r.en).then(it => { r.pending = false; r.inflight = false; if (!r.edited){ r.it = it; updateRow(r); } })
+      .catch(err => { r.pending = false; r.inflight = false; r.failed = true; updateRow(r); translateError(err); });
+  });
+}
+function translateError(err){
+  if (!Translation){ setAddStatus('Translation only works in the Android app. Type the Italian in yourself.'); return; }
+  setAddStatus('Could not translate. The Italian model needs Wi-Fi to download the first time. You can type the Italian yourself.');
+}
+function renderRows(){
+  $('#preview').innerHTML = rows.map(r => `
+    <div class="prow" data-key="${r.key}">
+      <p class="en">${esc(r.en)}</p>
+      <input type="text" lang="it" value="${esc(r.it)}" placeholder="${r.pending ? 'Translating…' : 'Type the Italian'}" aria-label="Italian">
+      <button class="icon-btn" data-say aria-label="Play Italian">${ICON_PLAY}</button>
+    </div>`).join('');
+  updateSaveBtn();
+}
+function updateRow(r){
+  const el = $(`.prow[data-key="${r.key}"] input`); if (!el) return;
+  if (document.activeElement !== el) el.value = r.it;
+  el.placeholder = r.pending ? 'Translating…' : 'Type the Italian';
+  updateSaveBtn();
+}
+function updateSaveBtn(){
+  const ready = rows.filter(r => r.en && r.it.trim()).length;
+  $('#saveBtn').disabled = !ready;
+  $('#saveBtn').textContent = ready > 1 ? `Add ${ready} sentences` : 'Add sentence';
+}
+function renderAddGroups(){
+  S.addGroups = S.addGroups.filter(id => groupOf(id));
+  $('#addGroups').innerHTML = lib.groups.map(g => `<button class="chip" data-g="${g.id}" aria-pressed="${S.addGroups.includes(g.id)}">${esc(g.name)}</button>`).join('') +
+    '<button class="chip add" data-new>+ New group</button>';
+}
+function saveRows(){
+  const ready = rows.filter(r => r.en && r.it.trim());
+  if (!ready.length) return;
+  const now = Date.now();
+  const made = ready.map((r, i) => ({id:uid('s'), en:r.en, it:r.it.trim(), added:now + i}));
+  lib.sentences.push(...made);
+  S.addGroups.forEach(gid => { const g = groupOf(gid); if (g) g.ids.push(...made.map(m => m.id)); });
+  saveLib(); saveSettings();
+  rows = []; $('#enInput').value = ''; renderRows(); renderHeader();
+  const gnames = S.addGroups.map(id => groupOf(id)).filter(Boolean).map(g => g.name);
+  toast(`Added ${made.length} ${made.length === 1 ? 'sentence' : 'sentences'}` + (gnames.length ? ` to ${gnames.join(', ')}` : ''));
+}
+
+/* ---------- LIBRARY view ---------- */
+let libFilter = 'all', libQuery = '', editingId = null;
+function renderLibFilter(){
+  if (libFilter !== 'all' && !groupOf(libFilter)) libFilter = 'all';
+  $('#libFilter').innerHTML = `<button class="chip" data-f="all" aria-pressed="${libFilter === 'all'}">All (${lib.sentences.length})</button>` +
+    lib.groups.map(g => `<button class="chip" data-f="${g.id}" aria-pressed="${libFilter === g.id}">${esc(g.name)} (${g.ids.filter(byId).length})</button>`).join('') +
+    '<button class="chip add" data-new>+ New group</button>';
+  $('#groupActions').hidden = libFilter === 'all';
+  $('#libTitle').textContent = libFilter === 'all' ? 'All sentences' : groupOf(libFilter).name;
+}
+function renderList(){
+  let list = libFilter === 'all' ? lib.sentences.slice() : groupOf(libFilter).ids.map(byId).filter(Boolean);
+  const q = libQuery.trim().toLowerCase();
+  if (q) list = list.filter(s => (s.en + ' ' + s.it).toLowerCase().includes(q));
+  list.reverse();
+  $('#libShown').textContent = `${list.length} shown`;
+  const ul = $('#cardList');
+  if (!lib.sentences.length){ ul.innerHTML = '<li class="empty"><strong>No sentences yet</strong>Add sentences you would actually say on a normal day.</li>'; return; }
+  if (!list.length){ ul.innerHTML = `<li class="empty">${q ? 'No sentences match your search.' : 'This group is empty. Edit a sentence to add it here, or pick this group when you add new ones.'}</li>`; return; }
+  ul.innerHTML = list.map(s => s.id === editingId ? `
+    <li class="card" data-id="${s.id}"><div class="edit-grid">
+      <input type="text" data-f="en" value="${esc(s.en)}" aria-label="English">
+      <input type="text" data-f="it" lang="it" value="${esc(s.it)}" aria-label="Italian" style="font-family:var(--serif);font-size:18px">
+      <div class="chips">${lib.groups.map(g => `<button class="chip" data-eg="${g.id}" aria-pressed="${g.ids.includes(s.id)}">${esc(g.name)}</button>`).join('')}</div>
+      <div class="row">
+        <button class="btn primary small" data-act="save">Save</button>
+        <button class="btn small" data-act="retr">Re-translate</button>
+        <button class="btn small" data-act="cancel">Cancel</button>
+        <button class="btn small" data-act="del" style="margin-left:auto;color:var(--danger)">Delete</button>
+      </div></div></li>` : `
+    <li class="card" data-id="${s.id}"><div class="card-main">
+      <div class="card-text"><p class="it" lang="it">${esc(s.it)}</p><p class="en">${esc(s.en)}</p>
+        ${groupsFor(s.id).length ? `<div class="tags">${groupsFor(s.id).map(g => `<span class="tag">${esc(g.name)}</span>`).join('')}</div>` : ''}</div>
+      <div class="card-actions">
+        <button class="lang-btn" data-act="sayit" aria-label="Play Italian">IT</button>
+        <button class="lang-btn" data-act="sayen" aria-label="Play English">EN</button>
+        <button class="icon-btn plain" data-act="edit" aria-label="Edit">${ICON_EDIT}</button>
+      </div></div></li>`).join('');
+}
+
+/* ---------- PLAY: queue ---------- */
+function playSource(){
+  const gids = S.playGroups.filter(id => groupOf(id));
+  if (!gids.length) return lib.sentences.map(s => s.id);
+  const seen = new Set(), out = [];
+  gids.forEach(id => groupOf(id).ids.forEach(sid => { if (!seen.has(sid) && byId(sid)){ seen.add(sid); out.push(sid); } }));
+  return out;
+}
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+const Q = {ids:[], pos:0, secStart:0};
+let R = null; // active recall state: {ids, order, round, i, announced}
+function buildQueue(keepCurrent){
+  const cur = Q.ids[Q.pos];
+  const ids = playSource();
+  if (S.order === 'shuffle') shuffle(ids);
+  Q.ids = ids;
+  const k = keepCurrent ? ids.indexOf(cur) : -1;
+  Q.pos = k > -1 ? k : 0; Q.secStart = Q.pos; R = null;
+}
+const curCard = () => byId(Q.ids[Q.pos]);
+
+function renderPlayGroups(){
+  S.playGroups = S.playGroups.filter(id => groupOf(id));
+  const all = !S.playGroups.length;
+  $('#playGroups').innerHTML = `<button class="chip" data-pg="all" aria-pressed="${all}">All sentences</button>` +
+    lib.groups.map(g => `<button class="chip" data-pg="${g.id}" aria-pressed="${S.playGroups.includes(g.id)}">${esc(g.name)}</button>`).join('');
+  const n = playSource().length;
+  $('#playCount').textContent = `${n} ${n === 1 ? 'sentence' : 'sentences'}` + (S.playGroups.length > 1 ? ' across the selected groups' : '');
+}
+
+/* ---------- PLAY: listen mode ---------- */
+const P = {playing:false, token:null};
+function voicer(choice){ let n = 0; return () => choice === 'b' ? (n++ % 2 ? 'm' : 'f') : choice; }
+function setPhase(kind, text){ $('#phase').dataset.kind = kind; $('#phaseText').textContent = text; }
+function setBar(ms){ const f = $('#barFill'); f.style.transition = 'none'; f.style.width = '0'; if (ms > 0){ void f.offsetWidth; f.style.transition = `width ${ms}ms linear`; f.style.width = '100%'; } }
+function showLines(card, first, veilSecond){
+  const second = first === 'en' ? 'it' : 'en';
+  const a = $('#lineA'), b = $('#lineB');
+  a.className = 'line lang-' + first; b.className = 'line lang-' + second;
+  a.lang = first; b.lang = second;
+  a.textContent = card ? card[first] : ''; b.textContent = card ? card[second] : '';
+  b.classList.toggle('veiled', !!veilSecond);
+}
+function setCounts(left, right){ $('#stCount').textContent = left; $('#stRep').textContent = right || ''; }
+function learnCount(){ return Q.ids.length ? `${Q.pos + 1} / ${Q.ids.length}` : '0 / 0'; }
+function idleStage(msg){
+  if (!Q.ids.length) buildQueue(false);
+  const c = curCard();
+  showLines(c, S.learn.first, S.hide); setCounts(learnCount());
+  setPhase('idle', c ? (msg || 'Tap play to start') : 'No sentences to play yet'); setBar(0);
+}
+function setPlayIcon(){ $('#playBtn').innerHTML = P.playing ? ICON_PAUSE : ICON_PLAY; $('#playBtn').setAttribute('aria-label', P.playing ? 'Pause' : 'Play'); }
+const gapMs = (g, d) => g === 'auto' ? Math.max(1200, d * 1.15 + 400) : Number(g) * 1000;
+
+async function learnCard(card, token){
+  const L = S.learn, plays = Number(L.plays) || 1, voice = voicer(L.voice);
+  for (let r = 1; r <= plays && !token.cancelled; r++){
+    const itRate = r === 1 ? L.rate : L.repRate, slowNote = r > 1 && L.repRate < L.rate ? ', slowly' : '';
+    setCounts(learnCount(), plays > 1 ? `Play ${r} of ${plays}` : '');
+    showLines(card, L.first, S.hide); setBar(0);
+    if (L.first === 'en'){
+      setPhase('listen', 'Listen');
+      await speak(card.en, 'en', 1, token, voice());
+      const think = Number(L.think) * 1000;
+      if (think && !token.cancelled){ setPhase('turn', 'How would you say it in Italian?'); setBar(think); await wait(think, token); }
+      if (token.cancelled) return;
+      showLines(card, 'en', false); setBar(0); setPhase('listen', 'Listen' + slowNote);
+      const d = await speak(card.it, 'it', itRate, token, voice());
+      if (token.cancelled) return;
+      const g = gapMs(L.gap, d); setPhase('turn', 'Your turn: say it out loud'); setBar(g); await wait(g, token);
+    } else {
+      setPhase('listen', 'Listen' + slowNote);
+      const d = await speak(card.it, 'it', itRate, token, voice());
+      if (token.cancelled) return;
+      const g = gapMs(L.gap, d); setPhase('turn', 'Your turn: say it out loud'); setBar(g); await wait(g, token);
+      if (token.cancelled) return;
+      showLines(card, 'it', false); setBar(0); setPhase('listen', 'Meaning');
+      await speak(card.en, 'en', 1, token, voice()); await wait(600, token);
+    }
+  }
+  await wait(400, token);
+}
+
+async function recallCard(card, token){
+  const C = S.recall, plays = Number(C.plays) || 1, voice = voicer(C.voice);
+  const ask = C.prompt, ans = ask === 'it' ? 'en' : 'it';
+  for (let r = 1; r <= plays && !token.cancelled; r++){
+    const itRate = r === 1 ? C.rate : C.repRate;
+    const rate = l => l === 'it' ? itRate : 1;
+    setCounts(`Recall ${R.i + 1} / ${R.order.length}`, `Round ${R.round} of ${C.rounds}` + (plays > 1 ? `, play ${r} of ${plays}` : ''));
+    showLines(card, ask, true); setBar(0); setPhase('listen', 'Listen');
+    await speak(card[ask], ask, rate(ask), token, voice());
+    if (token.cancelled) return;
+    const w = Number(C.wait) * 1000;
+    setPhase('turn', ask === 'it' ? 'What does it mean in English?' : 'Say it in Italian'); setBar(w); await wait(w, token);
+    if (token.cancelled) return;
+    showLines(card, ask, false); setBar(0); setPhase('listen', 'Answer');
+    await speak(card[ans], ans, rate(ans), token, voice());
+    if (token.cancelled) return;
+    const after = Number(C.after) * 1000;
+    if (after){ setPhase('turn', 'Say it again'); setBar(after); await wait(after, token); }
+  }
+  await wait(300, token);
+}
+
+async function runRecall(token){
+  const C = S.recall, annVoice = C.voice === 'm' ? 'm' : 'f';
+  while (R && R.round <= C.rounds && !token.cancelled){
+    if (!R.order){ R.order = R.ids.slice(); if (C.order === 'shuffle') shuffle(R.order); }
+    if (!R.announced){
+      const first = R.round === 1;
+      showLines(null, C.prompt, true); setCounts(`Recall: ${R.order.length} sentences`, `Round ${R.round} of ${C.rounds}`);
+      setBar(0); setPhase('listen', first ? 'Active recall' : 'Active recall, once more');
+      await speak(first ? 'Active recall' : 'Once more', 'en', 1, token, annVoice);
+      await wait(600, token);
+      if (token.cancelled) return;
+      R.announced = true;
+    }
+    while (R.i < R.order.length && !token.cancelled){
+      const c = byId(R.order[R.i]);
+      if (c) await recallCard(c, token);
+      if (token.cancelled) return;
+      R.i++;
+    }
+    if (token.cancelled) return;
+    R.round++; R.i = 0; R.order = null; R.announced = false;
+  }
+}
+
+async function runLoop(token){
+  while (!token.cancelled){
+    if (R){
+      await runRecall(token);
+      if (token.cancelled) return;
+      R = null; Q.secStart = Q.pos;
+      if (Q.pos < Q.ids.length){
+        setCounts(learnCount()); showLines(null, S.learn.first, true); setBar(0); setPhase('listen', 'Next set');
+        await speak('Next set', 'en', 1, token, S.recall.voice === 'm' ? 'm' : 'f'); await wait(500, token);
+      }
+      continue;
+    }
+    if (Q.pos >= Q.ids.length){
+      if (S.loop && Q.ids.length){ buildQueue(false); continue; }
+      stopPlay(true); Q.pos = 0; Q.secStart = 0; idleStage('Finished. Tap play to go again'); return;
+    }
+    const c = curCard();
+    if (!c){ Q.pos++; continue; }
+    await learnCard(c, token);
+    if (token.cancelled) return;
+    Q.pos++;
+    const size = Number(S.recall.size) || 0;
+    if (size > 0 && Q.pos > Q.secStart && (Q.pos - Q.secStart >= size || Q.pos >= Q.ids.length)){
+      R = {ids:Q.ids.slice(Q.secStart, Q.pos), order:null, round:1, i:0, announced:false};
+    }
+  }
+}
+function startPlay(){
+  if (!Q.ids.length) buildQueue(false);
+  if (!Q.ids.length){ toast('Add sentences first.'); return; }
+  if (quickToken){ quickToken.cancel(); quickToken = null; }
+  stopSpeech();
+  P.playing = true; setPlayIcon();
+  if (KeepAwake) KeepAwake.keepAwake().catch(() => {});
+  const token = makeToken(); P.token = token; runLoop(token);
+}
+function stopPlay(silent){
+  if (P.token){ P.token.cancel(); P.token = null; }
+  const was = P.playing; P.playing = false; setPlayIcon(); setBar(0);
+  if (was) stopSpeech();
+  if (KeepAwake) KeepAwake.allowSleep().catch(() => {});
+  if (!silent && was) setPhase('idle', 'Paused');
+}
+function stopAll(){ stopPlay(true); if (fcToken){ fcToken.cancel(); fcToken = null; } }
+function jump(d){
+  if (!Q.ids.length) return;
+  const was = P.playing; stopPlay(true);
+  if (R){
+    if (!R.order){ R.order = R.ids.slice(); if (S.recall.order === 'shuffle') shuffle(R.order); }
+    R.announced = true;
+    R.i = Math.max(0, R.i + d);
+    if (R.i >= R.order.length){ R.round++; R.i = 0; R.order = null; R.announced = false; if (R.round > S.recall.rounds){ R = null; Q.secStart = Q.pos; } }
+  } else {
+    Q.pos = (Q.pos + d + Q.ids.length) % Q.ids.length;
+    if (Q.pos < Q.secStart || (d < 0 && Q.pos === Q.ids.length - 1)) Q.secStart = Q.pos;
+  }
+  if (was) startPlay();
+  else if (R && R.order){ const c = byId(R.order[R.i]); showLines(c, S.recall.prompt, true); setCounts(`Recall ${R.i + 1} / ${R.order.length}`, `Round ${R.round} of ${S.recall.rounds}`); setPhase('idle', 'Paused in active recall'); }
+  else idleStage();
+}
+
+/* ---------- PLAY: flashcards ---------- */
+let flipped = false, fcToken = null;
+function renderFlash(){
+  if (!Q.ids.length) buildQueue(false);
+  const c = curCard(), front = S.learn.first, back = front === 'en' ? 'it' : 'en';
+  $('#fc').classList.toggle('flipped', flipped);
+  const f = $('#fcFront'), b = $('#fcBack');
+  f.className = 'face-text lang-' + front; b.className = 'face-text lang-' + back;
+  f.lang = front; b.lang = back;
+  f.textContent = c ? c[front] : 'No sentences to show yet';
+  b.textContent = c ? c[back] : '';
+  const count = Q.ids.length ? `${Q.pos + 1} / ${Q.ids.length}` : '';
+  $('#fcCountF').textContent = count; $('#fcCountB').textContent = count;
+  $('[data-read=front]').textContent = 'Read ' + (front === 'en' ? 'EN' : 'IT');
+  $('[data-read=back]').textContent = 'Read ' + (back === 'en' ? 'EN' : 'IT');
+}
+function readSide(which){
+  const c = curCard(); if (!c) return;
+  const L = S.learn, front = L.first, lang = which === 'front' ? front : (front === 'en' ? 'it' : 'en');
+  stopPlay(true);
+  if (quickToken){ quickToken.cancel(); quickToken = null; }
+  if (fcToken) fcToken.cancel();
+  stopSpeech();
+  const token = makeToken(); fcToken = token; const voice = voicer(L.voice);
+  (async () => {
+    const plays = Number(L.plays) || 1;
+    for (let r = 1; r <= plays && !token.cancelled; r++){
+      if (r > 1) await wait(500, token);
+      await speak(c[lang], lang, lang === 'it' ? (r === 1 ? L.rate : L.repRate) : 1, token, voice());
+    }
+  })();
+}
+function flip(){ flipped = !flipped; renderFlash(); if (S.auto) readSide(flipped ? 'back' : 'front'); }
+function moveCard(d){
+  if (!Q.ids.length) return;
+  Q.pos = (Q.pos + d + Q.ids.length) % Q.ids.length; flipped = false; renderFlash();
+  if (S.auto) readSide('front');
+}
+
+/* ---------- PLAY: settings UI ---------- */
+const secs = a => a.map(v => [v, v === 0 ? 'None' : v + ' s']);
+const times = n => Array.from({length:n}, (_, i) => [i + 1, (i + 1) + (i ? ' times' : ' time')]);
+const VOICE_OPTS = [['f','Female'],['m','Male'],['b','Both']];
+function uiSelect(pass, k, label, opts, cls){ return `<label class="pick ${cls || ''}"><span class="label">${label}</span><select class="field" data-pass="${pass}" data-k="${k}">${opts.map(([v,t]) => `<option value="${v}">${t}</option>`).join('')}</select></label>`; }
+function uiSeg(pass, k, label, opts, cls){ return `<div class="setting ${cls || ''}"><span class="label">${label}</span><div class="seg" data-pass="${pass}" data-k="${k}">${opts.map(([v,t]) => `<button data-v="${v}">${t}</button>`).join('')}</div></div>`; }
+function uiRange(pass, k, label, min, max){ return `<div class="setting"><label class="pick"><span class="label">${label} <span class="val" data-val="${pass}.${k}"></span></span><input type="range" min="${min}" max="${max}" step="0.05" data-pass="${pass}" data-k="${k}"></label></div>`; }
+function buildPassUI(){
+  $('#learnUI').innerHTML =
+    uiSeg('learn','first','Say first',[['en','English'],['it','Italian']]) +
+    `<div class="setting two">` +
+      uiSelect('learn','plays','Plays per sentence', times(5)) +
+      uiSelect('learn','gap','Pause to repeat it', [['auto','Match sentence']].concat(secs([1,2,3,4,6,8])), 'listen-only') +
+      uiSelect('learn','think','Time to recall', secs([0,1,2,3,5,8]), 'listen-only think-only') +
+    `</div>` +
+    uiSeg('learn','voice','Voice', VOICE_OPTS) +
+    uiRange('learn','rate','Italian speed, first play', 0.5, 1.3) +
+    uiRange('learn','repRate','Italian speed, repeat plays', 0.35, 1.3) +
+    `<p class="hint">Set plays to 2 and lower the repeat speed to hear each sentence at normal speed, then slowly.</p>`;
+  $('#recallUI').innerHTML =
+    `<div class="setting two">` +
+      uiSelect('recall','size','Recall after every', [[0,'Off']].concat([2,3,5,8,10,12,15,20,25,30].map(n => [n, n + ' sentences']))) +
+      uiSelect('recall','rounds','Rounds per set', times(5).map(([v]) => [v, v + (v > 1 ? ' rounds' : ' round')]), 'recall-on') +
+    `</div>` +
+    `<div class="recall-on">` +
+      uiSeg('recall','prompt','Prompt with',[['it','Italian, answer in English'],['en','English, answer in Italian']]) +
+      `<div class="setting two">` +
+        uiSelect('recall','wait','Time to answer', secs([1,2,3,4,5,6,8,10])) +
+        uiSelect('recall','after','Pause after answer', secs([0,1,2,3,4,6])) +
+        uiSelect('recall','plays','Plays per sentence', times(3)) +
+      `</div>` +
+      uiSeg('recall','order','Order in recall',[['inorder','In order'],['shuffle','Shuffle']]) +
+      uiSeg('recall','voice','Voice', VOICE_OPTS) +
+      uiRange('recall','rate','Italian speed, first play', 0.5, 1.3) +
+      uiRange('recall','repRate','Italian speed, repeat plays', 0.35, 1.3) +
+    `</div>`;
+}
+function renderPassUI(){
+  $$('[data-pass]').forEach(el => {
+    const v = S[el.dataset.pass][el.dataset.k];
+    if (el.classList.contains('seg')) el.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === String(v)));
+    else if (document.activeElement !== el) el.value = String(v);
+  });
+  $$('[data-val]').forEach(el => { const [p, k] = el.dataset.val.split('.'); el.textContent = Number(S[p][k]).toFixed(2) + '×'; });
+  $$('.think-only').forEach(e => e.hidden = S.learn.first !== 'en' || S.mode !== 'listen');
+  $$('.recall-on').forEach(e => e.hidden = !(Number(S.recall.size) > 0));
+}
+
+/* ---------- render ---------- */
+function renderHeader(){ const n = lib.sentences.length; $('#libCount').textContent = `${n} ${n === 1 ? 'sentence' : 'sentences'}`; }
+function setSeg(id, val){ $$(`#${id} button`).forEach(b => b.setAttribute('aria-pressed', b.dataset.v === val)); }
+function renderPlaySettings(){
+  setSeg('modeSeg', S.mode); setSeg('orderSeg', S.order);
+  $('#setLoop').checked = S.loop; $('#setHide').checked = S.hide; $('#setAuto').checked = S.auto;
+  $$('.listen-only').forEach(e => e.hidden = S.mode !== 'listen');
+  $$('.cards-only').forEach(e => e.hidden = S.mode !== 'cards');
+  $('#listenStage').hidden = S.mode !== 'listen';
+  $('#cardStage').hidden = S.mode !== 'cards';
+  renderPassUI();
+}
+function showView(v){
+  S.view = v; saveSettings();
+  ['add','lib','play','set'].forEach(k => $('#view-' + k).hidden = k !== v);
+  $$('nav.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.view === v));
+  if (v !== 'play') stopAll();
+  if (v === 'add') renderAddGroups();
+  if (v === 'lib'){ renderLibFilter(); renderList(); }
+  if (v === 'play'){ renderPlayGroups(); renderPlaySettings(); if (!R) buildQueue(true); if (S.mode === 'listen'){ if (!R) idleStage(); } else { flipped = false; renderFlash(); } }
+  if (v === 'set'){ loadVoices(); checkModel(); }
+  window.scrollTo(0,0);
+}
+function playSettingChanged(rebuild){
+  saveSettings();
+  if (rebuild){ stopAll(); buildQueue(true); }
+  renderPlaySettings(); renderPlayGroups();
+  if (S.mode === 'listen'){ if (!P.playing && !R) idleStage(); } else { renderFlash(); }
+}
+
+/* ---------- events ---------- */
+function bind(){
+  $$('nav.tabs button').forEach(b => b.onclick = () => showView(b.dataset.view));
+
+  // Add
+  $('#enInput').addEventListener('input', onEnInput);
+  $('#preview').addEventListener('input', e => {
+    const row = e.target.closest('.prow'); if (!row) return;
+    const r = rows.find(x => x.key === row.dataset.key); if (r){ r.it = e.target.value; r.edited = true; updateSaveBtn(); }
+  });
+  $('#preview').addEventListener('click', e => {
+    if (!e.target.closest('[data-say]')) return;
+    const r = rows.find(x => x.key === e.target.closest('.prow').dataset.key);
+    if (r && r.it) quickSay(r.it, 'it', true);
+  });
+  $('#addGroups').addEventListener('click', async e => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    if (c.hasAttribute('data-new')){ const g = await newGroup(); if (g){ S.addGroups.push(g.id); saveSettings(); } renderAddGroups(); return; }
+    const id = c.dataset.g; S.addGroups = S.addGroups.includes(id) ? S.addGroups.filter(x => x !== id) : S.addGroups.concat(id);
+    saveSettings(); renderAddGroups();
+  });
+  $('#saveBtn').onclick = () => { clearTimeout(addTimer); if (!rows.length) syncRows(); saveRows(); };
+  $('#clearBtn').onclick = () => { rows = []; $('#enInput').value = ''; renderRows(); setAddStatus(''); };
+
+  // Library
+  $('#libFilter').addEventListener('click', async e => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    if (c.hasAttribute('data-new')){ const g = await newGroup(); if (g) libFilter = g.id; }
+    else libFilter = c.dataset.f;
+    editingId = null; renderLibFilter(); renderList();
+  });
+  $('#renameGroup').onclick = async () => {
+    const g = groupOf(libFilter); if (!g) return;
+    const name = await ask({title:'Rename group', value:g.name, confirm:'Rename'});
+    if (name){ g.name = name; saveLib(); renderLibFilter(); renderList(); }
+  };
+  $('#deleteGroup').onclick = async () => {
+    const g = groupOf(libFilter); if (!g) return;
+    const ok = await ask({title:`Delete “${g.name}”?`, body:'Only the group is deleted. Its sentences stay in your library.', confirm:'Delete group', danger:true});
+    if (ok){ lib.groups = lib.groups.filter(x => x !== g); saveLib(); libFilter = 'all'; renderLibFilter(); renderList(); }
+  };
+  $('#search').addEventListener('input', e => { libQuery = e.target.value; renderList(); });
+  $('#cardList').addEventListener('click', async e => {
+    const li = e.target.closest('.card'); if (!li) return;
+    const s = byId(li.dataset.id); if (!s) return;
+    const chip = e.target.closest('[data-eg]');
+    if (chip){ chip.setAttribute('aria-pressed', chip.getAttribute('aria-pressed') !== 'true'); return; }
+    const btn = e.target.closest('button'); if (!btn) return;
+    const act = btn.dataset.act;
+    if (act === 'sayit') quickSay(s.it, 'it', true);
+    else if (act === 'sayen') quickSay(s.en, 'en', false);
+    else if (act === 'edit'){ editingId = s.id; renderList(); }
+    else if (act === 'cancel'){ editingId = null; renderList(); }
+    else if (act === 'retr'){
+      const en = li.querySelector('[data-f=en]').value.trim(); if (!en) return;
+      btn.disabled = true; btn.textContent = 'Translating…';
+      try { tCache.delete(en); li.querySelector('[data-f=it]').value = await translate(en); }
+      catch(err){ toast('Could not translate. The Italian model needs Wi-Fi to download the first time.'); }
+      btn.disabled = false; btn.textContent = 'Re-translate';
+    }
+    else if (act === 'save'){
+      const en = li.querySelector('[data-f=en]').value.trim(), it = li.querySelector('[data-f=it]').value.trim();
+      if (!en || !it){ toast('Both fields need text.'); return; }
+      s.en = en; s.it = it;
+      li.querySelectorAll('[data-eg]').forEach(c => {
+        const g = groupOf(c.dataset.eg); if (!g) return;
+        const on = c.getAttribute('aria-pressed') === 'true', has = g.ids.includes(s.id);
+        if (on && !has) g.ids.push(s.id); if (!on && has) g.ids = g.ids.filter(x => x !== s.id);
+      });
+      editingId = null; saveLib(); renderLibFilter(); renderList();
+    }
+    else if (act === 'del'){
+      const ok = await ask({title:'Delete this sentence?', body:s.it, confirm:'Delete', danger:true});
+      if (!ok) return;
+      lib.sentences = lib.sentences.filter(x => x.id !== s.id);
+      lib.groups.forEach(g => g.ids = g.ids.filter(x => x !== s.id));
+      editingId = null; saveLib(); renderLibFilter(); renderList(); renderHeader();
+    }
+  });
+
+  // Play
+  $('#playGroups').addEventListener('click', e => {
+    const c = e.target.closest('.chip'); if (!c) return;
+    const id = c.dataset.pg;
+    if (id === 'all') S.playGroups = [];
+    else S.playGroups = S.playGroups.includes(id) ? S.playGroups.filter(x => x !== id) : S.playGroups.concat(id);
+    playSettingChanged(true);
+  });
+  const seg = (id, key, rebuild) => $('#' + id).addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b || S[key] === b.dataset.v) return;
+    S[key] = b.dataset.v;
+    if (key === 'mode'){ stopAll(); flipped = false; }
+    playSettingChanged(rebuild);
+  });
+  seg('modeSeg', 'mode', false); seg('orderSeg', 'order', true);
+  $('#setLoop').onchange = e => { S.loop = e.target.checked; saveSettings(); };
+  $('#setHide').onchange = e => { S.hide = e.target.checked; playSettingChanged(false); };
+  $('#setAuto').onchange = e => { S.auto = e.target.checked; saveSettings(); };
+  buildPassUI();
+  const parse = v => v === 'auto' ? 'auto' : (v !== '' && !isNaN(+v) ? +v : v);
+  const passSet = (el, raw) => {
+    const p = el.dataset.pass, k = el.dataset.k, v = parse(raw);
+    if (S[p][k] === v) return;
+    S[p][k] = v;
+    if (p === 'learn' && k === 'first') flipped = false;
+    if (p === 'recall' && k === 'size' && !P.playing){ R = null; Q.secStart = Q.pos; }
+    playSettingChanged(false);
+  };
+  $('#view-play').addEventListener('click', e => {
+    const b = e.target.closest('.seg[data-pass] button'); if (b) passSet(b.parentNode, b.dataset.v);
+  });
+  $('#view-play').addEventListener('change', e => { if (e.target.matches('select[data-pass], input[data-pass]')) passSet(e.target, e.target.value); });
+  $('#view-play').addEventListener('input', e => {
+    if (!e.target.matches('input[type=range][data-pass]')) return;
+    const el = $(`[data-val="${e.target.dataset.pass}.${e.target.dataset.k}"]`); if (el) el.textContent = Number(e.target.value).toFixed(2) + '×';
+  });
+
+  $('#playBtn').onclick = () => P.playing ? stopPlay(false) : startPlay();
+  $('#prevBtn').onclick = () => jump(-1);
+  $('#nextBtn').onclick = () => jump(1);
+
+  const fc = $('#fc'); let sx = 0, sy = 0, swiped = false;
+  fc.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; swiped = false; }, {passive:true});
+  fc.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)){ swiped = true; moveCard(dx < 0 ? 1 : -1); }
+  });
+  fc.addEventListener('click', e => {
+    if (swiped){ swiped = false; return; }
+    const r = e.target.closest('[data-read]'); if (r){ e.stopPropagation(); readSide(r.dataset.read); return; }
+    flip();
+  });
+  $('#fcFlip').onclick = flip;
+  $('#fcPrev').onclick = () => moveCard(-1);
+  $('#fcNext').onclick = () => moveCard(1);
+
+  // Settings
+  $('#view-set').addEventListener('change', e => { const k = e.target.dataset.voice; if (k){ S.voices[k] = e.target.value; saveSettings(); } });
+  $('#view-set').addEventListener('click', e => {
+    const t = e.target.closest('[data-test]'); if (!t) return;
+    const k = t.dataset.test, g = k.slice(2) === 'M' ? 'm' : 'f';
+    if (k.startsWith('it')) quickSay('Ciao! Prendo un caffè prima del lavoro, e poi vado in palestra.', 'it', false, g);
+    else quickSay("I'll grab a coffee before work, then head to the gym.", 'en', false, g);
+  });
+  $('#installVoices').onclick = () => { if (TTS) TTS.openInstall().catch(() => toast('Open your phone settings, then Text-to-speech, to install voices.')); else toast('Available in the Android app.'); };
+  $('#downloadModel').onclick = async () => {
+    $('#downloadModel').disabled = true; setModelStatus('Downloading… keep the app open and stay on Wi-Fi.', true);
+    try { await ensureModel(); toast('Italian model ready. Translation works offline now.'); }
+    catch(e){ setModelStatus('Download did not finish. Connect to Wi-Fi and try again.', true); }
+    $('#downloadModel').disabled = false;
+  };
+  $('#exportBtn').onclick = async () => {
+    const data = JSON.stringify({app:'frasi', version:1, exported:new Date().toISOString(), lib});
+    try { await navigator.clipboard.writeText(data); toast(`Backup copied: ${lib.sentences.length} sentences. Paste it somewhere safe.`); }
+    catch(e){ $('#importWrap').hidden = false; $('#importText').value = data; $('#importText').select(); toast('Copy the text in the box below.'); }
+  };
+  $('#importToggle').onclick = () => { $('#importWrap').hidden = !$('#importWrap').hidden; };
+  $('#importBtn').onclick = () => {
+    let d; try { d = JSON.parse($('#importText').value); } catch(e){ toast('That is not a valid backup.'); return; }
+    const src = d && d.lib; if (!src || !Array.isArray(src.sentences)){ toast('That is not a valid backup.'); return; }
+    let addS = 0, addG = 0;
+    src.sentences.forEach(s => { if (s && s.id && s.en && s.it && !byId(s.id)){ lib.sentences.push({id:s.id, en:s.en, it:s.it, added:s.added || Date.now()}); addS++; } });
+    (src.groups || []).forEach(g => {
+      if (!g || !g.id || !Array.isArray(g.ids)) return;
+      const ex = groupOf(g.id);
+      if (ex) g.ids.forEach(id => { if (!ex.ids.includes(id)) ex.ids.push(id); });
+      else { lib.groups.push({id:g.id, name:g.name || 'Group', ids:g.ids.slice()}); addG++; }
+    });
+    saveLib(); renderHeader(); $('#importText').value = ''; $('#importWrap').hidden = true;
+    toast(`Restored ${addS} sentences and ${addG} groups.`);
+  };
+
+  if (!TTS && 'speechSynthesis' in window) speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+bind();
+renderHeader(); renderRows(); setPlayIcon();
+loadVoices();
+showView(['add','lib','play','set'].includes(S.view) ? S.view : 'add');
+if (Translation) ensureModel().catch(() => {});
+})();
+</script>
+</body>
+</html>
